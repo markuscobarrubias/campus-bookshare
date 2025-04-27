@@ -1,0 +1,54 @@
+<!-- filepath: c:\Users\marcobar\Downloads\S428 Final Project\templates\register.html -->
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+{% block content %}
+
+<div class="form-container">
+  <h2>Register</h2>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      <label for="first_name">{{ form.first_name.label }}</label>
+      {{ form.first_name(class="form-input") }}
+      {% for error in form.first_name.errors %}
+        <p class="form-error">{{ error }}</p>
+      {% endfor %}
+    </div>
+    <div class="form-group">
+      <label for="last_name">{{ form.last_name.label }}</label>
+      {{ form.last_name(class="form-input") }}
+      {% for error in form.last_name.errors %}
+        <p class="form-error">{{ error }}</p>
+      {% endfor %}
+    </div>
+    <div class="form-group">
+      <label for="email">{{ form.email.label }}</label>
+      {{ form.email(class="form-input") }}
+      {% for error in form.email.errors %}
+        <p class="form-error">{{ error }}</p>
+      {% endfor %}
+    </div>
+    <div class="form-group">
+      <label for="password">{{ form.password.label }}</label>
+      {{ form.password(class="form-input") }}
+      <small class="form-hint">Password must include at least one uppercase letter, one lowercase letter, one number, and one special character.</small>
+      {% for error in form.password.errors %}
+        <p class="form-error">{{ error }}</p>
+      {% endfor %}
+    </div>
+    <div class="form-group">
+      <label for="confirm_password">{{ form.confirm_password.label }}</label>
+      {{ form.confirm_password(class="form-input") }}
+      {% for error in form.confirm_password.errors %}
+        <p class="form-error">{{ error }}</p>
+      {% endfor %}
+    </div>
+    <div class="form-group">
+      {{ form.submit(class="btn primary-btn") }}
+    </div>
+  </form>
+  <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a>.</p>
+</div>
+
+{% endblock %}

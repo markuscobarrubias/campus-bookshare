@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Terms and Conditions{% endblock %}
+{% block content %}
+
+<div class="terms-container">
+  <h1 class="terms-title">Terms and Conditions</h1>
+  <p class="terms-intro">
+    Please read these terms and conditions carefully before reserving a book. By reserving a book, you agree to comply with and be bound by the following terms:
+  </p>
+
+  <ul class="terms-list">
+    <li>You will return the book by the agreed-upon due date.</li>
+    <li>You are responsible for any damage to the book while it is in your possession.</li>
+    <li>Failure to comply with these terms may result in penalties, fines, and/or the termination of your account.</li>
+    <li>Books must be picked up from the selected pickup location within 3 business days of reservation confirmation.</li>
+    <li>Late returns may incur a fine of $5 per day, up to a maximum of $50.</li>
+    <li>Campus BookShare reserves the right to modify these terms at any time without prior notice.</li>
+  </ul>
+
+  <p class="terms-footer">
+    If you have any questions about these terms, please contact our support team at <a href="mailto:support@campusbookshare.com">support@campusbookshare.com</a>.
+  </p>
+</div>
+
+<div class="back-link">
+    <a href="{{ url_for('reservations') }}">← Back to Reservation</a>
+  </div>
+</div>
+{% endblock %}

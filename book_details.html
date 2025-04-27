@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}{{ book.title }} - Book Details{% endblock %}
+{% block content %}
+
+<div class="book-detail-container">
+  <h2>{{ book.title }}</h2>
+  <p class="detail-author">by {{ book.author }}</p>
+
+  <div class="book-meta">
+    <p><strong>Owner:</strong> 
+        <a href="{{ url_for('user_profile', user_id=book.owner.user_id) }}" class="owner-link">
+            {{ book.owner.first_name }} {{ book.owner.last_name }}
+        </a>
+    </p>
+    <p><strong>Subject:</strong> {{ book.subject }}</p>
+    <p><strong>Course Code:</strong> {{ book.course_code }}</p>
+    <p><strong>Condition:</strong> {{ book.condition }}</p>
+    <p><strong>Posted on:</strong> {{ book.date_posted.strftime('%Y-%m-%d') }}</p>
+    <p><strong>Status:</strong> {{ book.availability }}</p>
+  </div>
+
+  <div class="book-actions">
+    {% if book.availability == 'Available' %}
+      <form method="POST" action="{{ url_for('reserve_book', book_id=book.book_id) }}">
+        <input type="submit" class="action-btn" value="Reserve This Book">
+      </form>
+    {% else %}
+      <p class="unavailable">This book is currently unavailable.</p>
+    {% endif %}
+
+    <a href="{{ url_for('new_message', user_id=book.user_id) }}" class="btn secondary-btn">Message Owner</a>
+  </div>
+
+  <hr>
+
+  <div class="reviews">
+    <h3>Reviews</h3>
+    <div class="reviews">
+      {% if reviews %}
+        {% for review in reviews %}
+          <div class="review-card">
+            <p><strong>Reviewer:</strong> {{ review.reviewer.first_name }} {{ review.reviewer.last_name }}</p>
+            <p><strong>Rating:</strong> {{ review.rating }}/5</p>
+            <p>{{ review.content }}</p>
+            <p class="timestamp">{{ review.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No reviews yet. Be the first to leave a review!</p>
+      {% endif %}
+    </div>
+    <a href="{{ url_for('add_book_review', book_id=book.book_id) }}" class="btn primary-btn">Leave a Review</a>
+  </div>
+</div>
+
+{% endblock %}

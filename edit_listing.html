@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Edit Listing - Campus BookShare{% endblock %}
+{% block content %}
+
+<div class="form-container">
+  <h2>Edit Listing 📘</h2>
+
+  <form method="POST">
+    {{ form.hidden_tag() }}
+
+    <label for="title">{{ form.title.label }}</label>
+    {{ form.title(class="form-input", placeholder="e.g. Principles of Microeconomics") }}
+
+    <label for="author">{{ form.author.label }}</label>
+    {{ form.author(class="form-input", placeholder="Author name") }}
+
+    <label for="subject">{{ form.subject.label }}</label>
+    {{ form.subject(class="form-input", placeholder="e.g. Economics") }}
+
+    <label for="course_code">{{ form.course_code.label }}</label>
+    {{ form.course_code(class="form-input", placeholder="e.g. ECON-E 201") }}
+
+    <label for="condition">{{ form.condition.label }}</label>
+    {{ form.condition(class="form-input") }}
+
+    <label for="availability">{{ form.availability.label }}</label>
+    {{ form.availability(class="form-input") }}
+
+    {{ form.submit(class="btn primary-btn") }}
+  </form>
+
+  <div class="back-link">
+    <a href="{{ url_for('dashboard') }}">← Back to Dashboard</a>
+  </div>
+</div>
+
+{% endblock %}

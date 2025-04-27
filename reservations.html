@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}My Reservations{% endblock %}
+{% block content %}
+
+<div class="reservations-container">
+  <h2>My Reservations</h2>
+
+  {% if reservations %}
+    <div class="reservations-list">
+      {% for reservation in reservations %}
+        <div class="reservation-card">
+          <h3>{{ reservation.book.title }}</h3>
+          <p><strong>Author:</strong> {{ reservation.book.author }}</p>
+          <p><strong>Reserved On:</strong> {{ reservation.date_reserved.strftime('%Y-%m-%d') }}</p>
+          <p><strong>Status:</strong> {{ reservation.book.availability }}</p>
+          <form method="POST" action="{{ url_for('cancel_reservation', reservation_id=reservation.reservation_id) }}">
+            <input type="submit" class="btn danger-btn" value="Cancel Reservation">
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>You have no active reservations.</p>
+  {% endif %}
+
+  <hr>
+
+  <h2>Available Books</h2>
+  <div class="available-books">
+    {% if available_books %}
+      {% for book in available_books %}
+        <div class="book-card">
+          <h3>{{ book.title }}</h3>
+          <p><strong>Author:</strong> {{ book.author }}</p>
+          <p><strong>Owner:</strong> {{ book.owner.first_name }} {{ book.owner.last_name }}</p>
+          <p><strong>Condition:</strong> {{ book.condition }}</p>
+          <p><strong>Availability:</strong> {{ book.availability }}</p>
+          <form method="POST" action="{{ url_for('reserve_book', book_id=book.book_id) }}" class="reservation-form">
+            <div class="form-group">
+              <label for="due_date"><strong>Choose a Due Date:</strong></label>
+              <input type="date" id="due_date" name="due_date" required
+                     min="{{ (datetime.utcnow() + timedelta(days=1)).strftime('%Y-%m-%d') }}"
+                     max="{{ (datetime.utcnow() + timedelta(weeks=16)).strftime('%Y-%m-%d') }}">
+            </div>
+
+            <div class="form-group">
+              <label for="pickup_location"><strong>Pickup Location:</strong></label>
+              <select id="pickup_location" name="pickup_location" required>
+                <option value="Library">Library</option>
+                <option value="Campus Center">Campus Center</option>
+                <option value="Bookstore">Bookstore</option>
+              </select>
+              <small class="form-hint">Pickup location cannot be blank.</small>
+            </div>
+
+            <div class="form-group">
+              <label for="reason"><strong>Reason for Reservation (Optional):</strong></label>
+              <textarea id="reason" name="reason" rows="3" placeholder="Why are you reserving this book?"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>
+                <input type="checkbox" name="agree_terms" required>
+                I agree to the <a href="{{ url_for('terms') }}">Terms and Conditions</a>.
+              </label>
+            </div>
+
+            <div class="form-group">
+              <input type="submit" class="btn primary-btn" value="Reserve This Book">
+            </div>
+          </form>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No books are available for reservation at the moment.</p>
+    {% endif %}
+  </div>
+</div>
+
+<div class="back-link">
+  <a href="{{ url_for('dashboard') }}">← Back to Dashboard</a>
+</div>
+
+{% endblock %}

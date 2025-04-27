@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}User Profile{% endblock %}
+{% block content %}
+
+<div class="user-profile-container">
+  <h2 class="user-profile-title">{{ user.first_name }} {{ user.last_name }}</h2>
+
+  <div class="reputation-section">
+    <h3>Reputation Score</h3>
+    <p class="reputation-score">
+      {{ user.reputation_score if user.reputation_score else "No reviews yet" }}
+    </p>
+    <a href="{{ url_for('add_user_review', user_id=user.user_id) }}" class="btn primary-btn">Leave a Review</a>
+  </div>
+
+  <div class="reviews-section">
+    <h3>Reviews for {{ user.first_name }} {{ user.last_name }}</h3>
+    {% if user.received_reviews %}
+      {% for review in user.received_reviews %}
+        <div class="review-card">
+          <p><strong>Reviewer:</strong> {{ review.reviewer.first_name }} {{ review.reviewer.last_name }}</p>
+          <p><strong>Rating:</strong> {{ review.rating }}/5</p>
+          <p>{{ review.content }}</p>
+          <p class="timestamp">{{ review.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="no-reviews">No reviews yet.</p>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

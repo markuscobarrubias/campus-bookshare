@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Home - Campus BookShare{% endblock %}
+
+{% block content %}
+<div class="home-wrapper">
+  <header class="hero-section">
+    <h1>Welcome to <span class="brand-name">Campus BookShare</span></h1>
+    <p class="subtitle">Find, lend, and borrow textbooks with ease!</p>
+  </header>
+
+  <section class="recent-listings">
+    <h2>Recent Listings</h2>
+    <div class="listings-grid">
+      {% if listings %}
+        {% for listing in listings %}
+          <div class="listing-card">
+            <h3>{{ listing.title }}</h3>
+            <p>{{ listing.availability }}</p>
+            <a href="{{ url_for('book_detail', book_id=listing.book_id) }}" class="btn action-btn">View Details</a>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No listings available at the moment. Check back later!</p>
+      {% endif %}
+    </div>
+  </section>
+</div>
+{% endblock %}

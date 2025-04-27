@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Messages{% endblock %}
+{% block content %}
+
+<div class="messages-container">
+  <h2>Messages</h2>
+
+  <div class="received-messages">
+    <h3>Received Messages</h3>
+    {% if received_messages %}
+      {% for message in received_messages %}
+        <div class="message-card">
+          <p><strong>From:</strong> {{ message.sender.first_name }} {{ message.sender.last_name }}</p>
+          <p><strong>Topic:</strong> {{ message.topic }}</p>
+          <p>{{ message.content }}</p>
+          <p class="timestamp">{{ message.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+          <a href="{{ url_for('reply_message', message_id=message.message_id) }}" class="btn secondary-btn">Reply</a>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No received messages.</p>
+    {% endif %}
+  </div>
+
+  <div class="sent-messages">
+    <h3>Sent Messages</h3>
+    {% if sent_messages %}
+      {% for message in sent_messages %}
+        <div class="message-card">
+          <p><strong>To:</strong> {{ message.recipient.first_name }} {{ message.recipient.last_name }}</p>
+          <p><strong>Topic:</strong> {{ message.topic }}</p>
+          <p>{{ message.content }}</p>
+          <p class="timestamp">{{ message.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No sent messages.</p>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

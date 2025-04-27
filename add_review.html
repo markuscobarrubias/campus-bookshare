@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Add Review{% endblock %}
+{% block content %}
+
+<div class="form-container">
+  <h2 class="form-title">Leave a Review</h2>
+  <form method="POST" class="review-form">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      <label for="rating" class="form-label">{{ form.rating.label }}</label>
+      {{ form.rating(class="form-input") }}
+      <small class="form-hint">Rating must be a number between 1 and 5.</small>
+      {% for error in form.rating.errors %}
+        <p class="form-error">{{ error }}</p>
+      {% endfor %}
+    </div>
+    <div class="form-group">
+      <label for="content" class="form-label">{{ form.content.label }}</label>
+      {{ form.content(class="form-input", rows="4") }}
+    </div>
+    <div class="form-group">
+      {{ form.submit(class="btn primary-btn") }}
+    </div>
+  </form>
+  <div class="back-link">
+    <a href="{{ url_for('dashboard') }}">← Back to Dashboard</a>
+  </div>
+</div>
+
+{% endblock %}

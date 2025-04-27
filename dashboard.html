@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Campus BookShare{% endblock %}
+{% block content %}
+
+<div class="dashboard-container">
+
+  <h2>Hello, {{ current_user.name }} 👋</h2>
+  <p class="dashboard-subtitle">Welcome to Your Campus Bookshare Dashboard</p>
+
+  <!-- 🔍 Search Form -->
+  <form method="GET" action="{{ url_for('search_books') }}" class="search-form">
+    <input type="text" name="query" placeholder="Search by title, author, or subject" required>
+    <button type="submit" class="btn primary-btn">Search</button>
+  </form>
+
+  <!-- ➕ Create Listing Button -->
+  <div class="create-button-wrapper">
+    <a href="{{ url_for('create_listing') }}" class="btn primary-btn">+ Create New Listing</a>
+  </div>
+
+  <!-- 📚 Reservations Button -->
+  <div class="create-button-wrapper">
+    <a href="{{ url_for('reservations') }}" class="btn primary-btn">📚 View Reservations</a>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- 📚 Your Listings -->
+    <div class="dashboard-section">
+      <h3>Your Listings</h3>
+      {% if listings %}
+        {% for book in listings %}
+        <div class="card">
+          <h4>
+            <a href="{{ url_for('book_detail', book_id=book.book_id) }}">{{ book.title }}</a>
+          </h4>
+          <p><strong>Author:</strong> {{ book.author }}</p>
+          <p><strong>Owner:</strong> {{ book.owner.first_name }} {{ book.owner.last_name }}</p>
+          <p><strong>Status:</strong> {{ book.availability }}</p>
+          <a href="{{ url_for('edit_listing', book_id=book.book_id) }}" class="action-btn">Edit</a>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p>You haven't posted any books yet.</p>
+      {% endif %}
+    </div>
+
+    <!-- 📦 Reservations -->
+    <div class="dashboard-section">
+      <h3>Reservations</h3>
+      {% if reservations %}
+        {% for res in reservations %}
+        <div class="card">
+          <p><strong>Book:</strong> {{ res.book.title }}</p>
+          <p><strong>Due:</strong> {{ res.date_reserved.strftime('%Y-%m-%d') }}</p>
+          <p><strong>Status:</strong> {{ res.book.availability }}</p>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p>No active reservations.</p>
+      {% endif %}
+    </div>
+
+    <!-- 📦 Overdue Books -->
+    <div class="dashboard-section">
+      <h3>Overdue Books</h3>
+      {% for reservation in reservations %}
+        {% if reservation.is_overdue %}
+          <div class="overdue-book">
+            <p><strong>{{ reservation.book.title }}</strong> is overdue!</p>
+            <p>Due Date: {{ reservation.due_date.strftime('%Y-%m-%d') }}</p>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <!-- 💬 Messages -->
+    <div class="dashboard-section">
+      <h3>Messages</h3>
+      <div class="received-messages">
+        <h4>Received Messages</h4>
+        {% if received_messages %}
+          {% for msg in received_messages %}
+            <div class="card message-card">
+              <p><strong>From:</strong> {{ msg.sender.first_name }} {{ msg.sender.last_name }}</p>
+              <p><strong>Topic:</strong> {{ msg.topic }}</p>
+              <p>{{ msg.content }}</p>
+              <p class="timestamp">{{ msg.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+              <!-- Reply Button -->
+              <a href="{{ url_for('reply_message', message_id=msg.message_id) }}" class="btn secondary-btn">Reply</a>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p>No received messages.</p>
+        {% endif %}
+      </div>
+
+      <div class="sent-messages">
+        <h4>Sent Messages</h4>
+        {% if sent_messages %}
+          {% for msg in sent_messages %}
+            <div class="card message-card">
+              <p><strong>To:</strong> {{ msg.recipient.first_name }} {{ msg.recipient.last_name }}</p>
+              <p><strong>Topic:</strong> {{ msg.topic }}</p>
+              <p>{{ msg.content }}</p>
+              <p class="timestamp">{{ msg.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p>No sent messages.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- 🗨️ Message Board -->
+    <div class="dashboard-section">
+      <h3>Message Board</h3>
+      <p>Join the conversation with other users!</p>
+      <a href="{{ url_for('message_board') }}" class="btn primary-btn">Go to Message Board</a>
+    </div>
+
+    <!-- 🔔 Notifications -->
+    <div class="dashboard-section">
+      <h3>Notifications</h3>
+      <div class="notifications">
+        {% if current_user.notifications %}
+          {% for notification in current_user.notifications %}
+            <div class="notification-card {{ 'read' if notification.is_read else 'unread' }}">
+              <p>{{ notification.message }}</p>
+              <p class="timestamp">{{ notification.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+              {% if not notification.is_read %}
+                <form method="POST" action="{{ url_for('mark_notification_as_read', notification_id=notification.notification_id) }}">
+                  <button type="submit" class="btn secondary-btn">Mark as Read</button>
+                </form>
+              {% endif %}
+            </div>
+          {% endfor %}
+        {% else %}
+          <p>No notifications at this time.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- 🛡️ Account Verification -->
+    <div class="dashboard-section">
+      <h3>Account Verification</h3>
+      {% if current_user.verified %}
+        <p class="verified-status">Your account is verified. ✅</p>
+      {% else %}
+        <p class="verified-status">Your account is not verified. ❌</p>
+        <a href="{{ url_for('verify_account') }}" class="btn primary-btn">Verify Now</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}

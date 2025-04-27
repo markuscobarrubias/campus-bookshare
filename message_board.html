@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Message Board{% endblock %}
+{% block content %}
+
+<div class="form-container">
+  <h2>Message Board 💬</h2>
+
+  <!-- Show a reply indicator if the user is replying to a message -->
+  {% if request.args.get('parent_id') %}
+    <div class="reply-indicator">
+      <p>You are replying to: <strong>{{ parent_message.topic }}</strong></p>
+      <a href="{{ url_for('message_board') }}" class="btn secondary-btn">Cancel Reply</a>
+    </div>
+  {% endif %}
+
+  <form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+
+    <!-- Show the topic field only if it's not a reply -->
+    {% if not request.args.get('parent_id') %}
+      <label for="topic">{{ form.topic.label }}</label>
+      {{ form.topic(class="form-input", placeholder="Enter a topic") }}
+    {% endif %}
+
+    <label for="content">{{ form.content.label }}</label>
+    {{ form.content(class="form-input", placeholder="Write your message here...") }}
+
+    <label for="link">{{ form.link.label }}</label>
+    {{ form.link(class="form-input", placeholder="Attach a link (optional)") }}
+
+    {{ form.submit(class="btn primary-btn") }}
+  </form>
+</div>
+
+<div class="message-board">
+  <h3>All Messages</h3>
+  {% if messages %}
+    {% for msg in messages %}
+      <div class="message-card">
+        <p><strong>{{ msg.sender.first_name }} {{ msg.sender.last_name }}</strong> posted:</p>
+        <p><strong>Topic:</strong> {{ msg.topic }}</p>
+        <p>{{ msg.content }}</p>
+        {% if msg.link %}
+          <p><a href="{{ url_for('static', filename=msg.link.split('static/')[-1]) }}" target="_blank">View Attachment</a></p>
+        {% endif %}
+        <p class="timestamp">{{ msg.timestamp }}</p>
+        <a href="{{ url_for('message_board', parent_id=msg.message_id) }}" class="btn secondary-btn">Reply</a>
+
+        <!-- Display replies -->
+        {% for reply in msg.replies %}
+          <div class="reply-card">
+            <p><strong>{{ reply.sender.first_name }} {{ reply.sender.last_name }}</strong> replied:</p>
+            <p>{{ reply.content }}</p>
+            {% if reply.link %}
+              <p><a href="{{ url_for('static', filename=reply.link.split('static/')[-1]) }}" target="_blank">View Attachment</a></p>
+            {% endif %}
+            <p class="timestamp">{{ reply.timestamp }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No messages yet. Be the first to post!</p>
+  {% endif %}
+</div>
+
+<div class="back-link">
+  <a href="{{ url_for('dashboard') }}">← Back to Dashboard</a>
+</div>
+
+{% endblock %}

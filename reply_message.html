@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Reply to Message{% endblock %}
+{% block content %}
+
+<div class="form-container">
+  <h2>Reply to {{ parent_message.sender.first_name }} {{ parent_message.sender.last_name }}</h2>
+  <p><strong>Topic:</strong> {{ parent_message.topic }}</p>
+  <p>{{ parent_message.content }}</p>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      <label for="content">{{ form.content.label }}</label>
+      {{ form.content(class="form-input", rows="4") }}
+    </div>
+    <div class="form-group">
+      {{ form.submit(class="btn primary-btn") }}
+    </div>
+  </form>
+</div>
+
+{% endblock %}
